@@ -1,5 +1,9 @@
 # cmake build
 build/
+CMakeLists.txt.*
+
+# Mac OSX
+*.DS_Store
 
 # vscode
 .vscode/

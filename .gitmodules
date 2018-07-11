@@ -1,6 +1,0 @@
-[submodule "third_party/x264"]
-	path = third_party/x264
-	url = http://git.videolan.org/git/x264.git
-[submodule "third_party/faac"]
-	path = third_party/faac
-	url = https://git.code.sf.net/p/faac/faac
