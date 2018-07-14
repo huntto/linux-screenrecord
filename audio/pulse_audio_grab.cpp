@@ -102,6 +102,28 @@ void GetSourceDevices(std::string name, std::list<Device> &source_list) {
     Disconnect(mainloop, context, state);
 }
 
+pa_sample_format GetPulseAudioSampleFormat(audio::SampleFormat sample_format) {
+    using SampleFormat = audio::SampleFormat;
+    switch (sample_format) {
+        case SampleFormat::SAMPLE_FMT_S16LE:
+            return PA_SAMPLE_S16LE;
+        case SampleFormat::SAMPLE_FMT_S16BE:
+            return PA_SAMPLE_S16BE;
+        case SampleFormat::SAMPLE_FMT_FLOAT32LE:
+            return PA_SAMPLE_FLOAT32LE;
+        case SampleFormat::SAMPLE_FMT_FLOAT32BE:
+            return PA_SAMPLE_FLOAT32BE;
+        case SampleFormat::SAMPLE_FMT_S24LE:
+            return PA_SAMPLE_S24LE;
+        case SampleFormat::SAMPLE_FMT_S24BE:
+            return PA_SAMPLE_S24BE;
+        case SampleFormat::SAMPLE_FMT_S24_32LE:
+            return PA_SAMPLE_S24_32LE;
+        case SampleFormat::SAMPLE_FMT_S24_32BE:
+            return PA_SAMPLE_S24_32BE;
+    }
+}
+
 }  // namespace
 
 namespace audio {
@@ -110,7 +132,8 @@ namespace grab {
 PulseAudioGrab::PulseAudioGrab(std::string name)
         : name_(name), inited_(false), simple_reader_(nullptr) {}
 
-bool PulseAudioGrab::Init(uint32_t sample_rate, uint8_t channels) {
+bool PulseAudioGrab::Init(SampleFormat sample_format, uint32_t sample_rate,
+                          uint8_t channels) {
     if (inited_) {
         return true;
     }
@@ -123,8 +146,9 @@ bool PulseAudioGrab::Init(uint32_t sample_rate, uint8_t channels) {
     }
 
     const char *source_name = source_devices.begin()->name.c_str();
-    const pa_sample_spec sample_spec = {PA_SAMPLE_FLOAT32LE, sample_rate,
-                                        channels};
+
+    const pa_sample_spec sample_spec = {
+            GetPulseAudioSampleFormat(sample_format), sample_rate, channels};
 
     int error{0};
     if (!(simple_reader_ = pa_simple_new(

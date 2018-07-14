@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <vector>
 
+#include "sample_format.h"
+
 namespace audio {
 namespace grab {
 
@@ -11,7 +13,8 @@ class AudioGrab {
 public:
     virtual ~AudioGrab() = default;
 
-    virtual bool Init(uint32_t sample_rate, uint8_t channels) = 0;
+    virtual bool Init(SampleFormat sample_format, uint32_t sample_rate,
+                      uint8_t channels) = 0;
     virtual void Release() = 0;
 
     virtual bool Grab(std::vector<uint8_t>& buffer) = 0;

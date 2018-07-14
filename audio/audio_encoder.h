@@ -4,16 +4,22 @@
 #include <stdint.h>
 #include <vector>
 
+#include "sample_format.h"
+
 namespace audio {
 namespace encoder {
 
 class AudioEncoder {
 public:
-    virtual bool Init(unsigned long sampleRate, unsigned int numChannels) = 0;
+    virtual bool Init(SampleFormat sample_format, unsigned long sample_rate,
+                      unsigned int channels) = 0;
     virtual void Release() = 0;
     virtual int Encode(std::vector<uint8_t>& input_buffer,
-                       unsigned int input_sapmles,
                        std::vector<uint8_t>& output_buffer) = 0;
+
+    virtual std::vector<uint8_t> GetInputBuffer() = 0;
+    virtual std::vector<uint8_t> GetOutputBuffer() = 0;
+
     virtual ~AudioEncoder() = default;
 };
 

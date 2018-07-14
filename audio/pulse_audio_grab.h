@@ -19,7 +19,8 @@ public:
 
     virtual ~PulseAudioGrab() override = default;
 
-    virtual bool Init(uint32_t sample_rate, uint8_t channels) override;
+    virtual bool Init(SampleFormat sample_format, uint32_t sample_rate,
+                      uint8_t channels) override;
     virtual void Release() override;
 
     virtual bool Grab(std::vector<uint8_t>& buffer) override;

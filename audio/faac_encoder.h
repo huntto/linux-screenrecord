@@ -14,16 +14,26 @@ public:
     FaacEncoder(FaacEncoder&) = delete;
     FaacEncoder& operator=(FaacEncoder&) = delete;
 
-    virtual bool Init(unsigned long sampleRate,
-                      unsigned int numChannels) override;
+    virtual bool Init(SampleFormat sample_format, unsigned long sample_rate,
+                      unsigned int channels) override;
     virtual void Release() override;
     virtual int Encode(std::vector<uint8_t>& input_buffer,
-                       unsigned int input_sapmles,
                        std::vector<uint8_t>& output_buffer) override;
+
+    virtual std::vector<uint8_t> GetInputBuffer() override {
+        return std::vector<uint8_t>(input_buffer_size_);
+    }
+    virtual std::vector<uint8_t> GetOutputBuffer() override {
+        return std::vector<uint8_t>(output_buffer_size_);
+    }
+
     virtual ~FaacEncoder() override = default;
 
 private:
     faacEncHandle faac_enc_handle_;
+    unsigned long input_buffer_size_ = 1024;
+    unsigned long output_buffer_size_ = 2048;
+    unsigned long input_samples_;
 };
 
 }  // namespace encoder
