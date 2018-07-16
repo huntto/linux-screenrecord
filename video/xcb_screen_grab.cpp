@@ -40,7 +40,7 @@ bool XcbScreenGrab::Init(int& width, int& height, int& stride) {
 
     /* Set results */
     width = screen_->width_in_pixels;
-    height = screen_->height_in_pixels;
+    height = (screen_->height_in_pixels >> 1) << 1;
     stride = screen_->width_in_pixels * (bpp >> 3);
 
     shminfo_.shmid = shmget(IPC_PRIVATE, stride * height, (IPC_CREAT | 0666));
