@@ -1,5 +1,6 @@
 #include "x264_encoder.h"
 
+#include <iostream>
 #include "libyuv.h"
 
 namespace video {
@@ -47,7 +48,8 @@ void X264Encoder::Destroy() {
     inited_ = false;
 }
 
-int X264Encoder::Encode(frame::Image& image, uint8_t** packet) {
+int X264Encoder::Encode(frame::Image& image, uint8_t** packet,
+                        int& is_keyframe) {
     libyuv::ARGBToNV12(
             image.data, image.stride, input_picture_.img.plane[0],
             input_picture_.img.i_stride[0], input_picture_.img.plane[1],
@@ -59,6 +61,7 @@ int X264Encoder::Encode(frame::Image& image, uint8_t** packet) {
     int i_nal;
     frame_size = x264_encoder_encode(x264_encoder_, &nal, &i_nal,
                                      &input_picture_, &pic_out);
+    is_keyframe = pic_out.b_keyframe;
     if (frame_size) {
         *packet = nal[0].p_payload;
     }
