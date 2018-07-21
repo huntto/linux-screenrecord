@@ -2,6 +2,8 @@
 #define SCREEN_GRAB_H
 
 #include <stdint.h>
+#include <memory>
+#include <vector>
 
 #include "image.h"
 
@@ -12,9 +14,13 @@ class ScreenGrab {
 public:
     virtual ~ScreenGrab() = default;
 
-    virtual bool Init(int& width, int& height, int& stride) = 0;
+    virtual bool Init() = 0;
+    virtual bool Grab(std::shared_ptr<frame::Image> image, bool draw_mouse) = 0;
     virtual bool Destroy() = 0;
-    virtual video::frame::Image& Grab(bool draw_mouse) = 0;
+    virtual int GetWidth() = 0;
+    virtual int GetHeight() = 0;
+    virtual int GetStride() = 0;
+    virtual frame::Image::Format GetFormat() = 0;
 };
 
 }  // namespace grab

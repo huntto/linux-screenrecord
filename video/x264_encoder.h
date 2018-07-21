@@ -12,7 +12,7 @@ public:
     virtual bool Init(int width, int height, uint32_t fps_numerator,
                       uint32_t fps_denominator, int bitrate) override;
     virtual void Destroy() override;
-    virtual int Encode(frame::Image& image, uint8_t** packet,
+    virtual int Encode(std::shared_ptr<frame::Image> image, uint8_t** packet,
                        int& is_keyframe) override;
     virtual ~X264Encoder() override;
 

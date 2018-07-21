@@ -22,7 +22,7 @@ endif()
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/ SOURCE_DIR)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/video/ SOURCE_DIR)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/audio/ SOURCE_DIR)
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/muxer/ SOURCE_DIR)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/avformat/ SOURCE_DIR)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 add_executable(screenrecord ${SOURCE_DIR})
 

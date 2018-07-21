@@ -48,12 +48,19 @@ void X264Encoder::Destroy() {
     inited_ = false;
 }
 
-int X264Encoder::Encode(frame::Image& image, uint8_t** packet,
+int X264Encoder::Encode(std::shared_ptr<frame::Image> image, uint8_t** packet,
                         int& is_keyframe) {
-    libyuv::ARGBToNV12(
-            image.data, image.stride, input_picture_.img.plane[0],
-            input_picture_.img.i_stride[0], input_picture_.img.plane[1],
-            input_picture_.img.i_stride[1], image.width, image.height);
+    switch (image->GetFormat()) {
+        case frame::Image::Format::FMT_0RGB32:
+            libyuv::ARGBToNV12(
+                    image->GetData(), image->GetStride(),
+                    input_picture_.img.plane[0], input_picture_.img.i_stride[0],
+                    input_picture_.img.plane[1], input_picture_.img.i_stride[1],
+                    image->GetWidth(), image->GetHeight());
+            break;
+        default:
+            return 0;
+    }
 
     int frame_size = 0;
     x264_picture_t pic_out;
