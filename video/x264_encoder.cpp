@@ -19,7 +19,7 @@ bool X264Encoder::Init(int width, int height, uint32_t fps_numerator,
     x264_param.i_fps_den = fps_denominator;
     x264_param.i_csp = X264_CSP_NV12;
     x264_param.i_threads = 1;
-    x264_param.i_keyint_max = X264_KEYINT_MAX_INFINITE;
+    x264_param.i_keyint_max = 30;
     x264_param.i_log_level = X264_LOG_WARNING;
     x264_param.rc.i_rc_method = X264_RC_ABR;
     x264_param.rc.b_filler = 0;

@@ -15,6 +15,7 @@ static const uint32_t kFpsDen = 1;
 static const char *kFileName = "screenrecord.flv";
 static const int kWidth = 1280;
 static const int kHeight = 720;
+static bool recording = true;
 
 void RecordAudioTask(
         std::shared_ptr<avformat::encoder::AVFormatEncoder> avformat_enc) {
@@ -30,14 +31,11 @@ void RecordAudioTask(
     faac_encoder.Init(audio::SampleFormat::SAMPLE_FMT_S16LE, sample_rate,
                       channels);
 
-    long samples = 1000;
-
     std::vector<uint8_t> input_buffer = faac_encoder.GetInputBuffer();
     std::vector<uint8_t> output_buffer = faac_encoder.GetOutputBuffer();
 
     auto begin_time = std::chrono::system_clock::now();
-    while (samples--) {
-        std::cout << "samples:" << samples << std::endl;
+    while (recording) {
         auto start_time = std::chrono::system_clock::now();
         unsigned int time_stamp = static_cast<unsigned int>(
                 std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -56,8 +54,8 @@ void RecordAudioTask(
 
 void RecordVideoTask(
         std::shared_ptr<avformat::encoder::AVFormatEncoder> avformat_enc,
-        const int width, const int height, const uint32_t fps_den,
-        const uint32_t fps_num) {
+        const int width, const int height, const uint32_t fps_num,
+        const uint32_t fps_den) {
     auto frame_interval_us = std::chrono::duration<long, std::micro>(
             static_cast<long>(1000000.0 * fps_den / fps_num));
 
@@ -74,10 +72,8 @@ void RecordVideoTask(
     std::shared_ptr<Image> image = std::shared_ptr<Image>(new ShmImage);
     image->Init(width, height, format);
 
-    long frames = 1000;
     auto begin_time = std::chrono::system_clock::now();
-    while (frames--) {
-        std::cout << "frames:" << frames << std::endl;
+    while (recording) {
         auto start_time = std::chrono::system_clock::now();
 
         xcb_screen_grab.Grab(image, false);
@@ -114,6 +110,10 @@ int main(int argc, char const *argv[]) {
     std::thread record_audio_thread(RecordAudioTask, avformat_enc);
     std::thread record_video_thread(RecordVideoTask, avformat_enc, kWidth,
                                     kHeight, kFpsNum, kFpsDen);
+
+    std::this_thread::sleep_for(std::chrono::minutes(1));
+
+    recording = false;
     record_audio_thread.join();
     record_video_thread.join();
     return 0;
